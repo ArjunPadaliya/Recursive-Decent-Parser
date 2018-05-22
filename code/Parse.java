@@ -119,14 +119,23 @@ public class Parse
         switch (opToken.charAt(0))
         {
             case '+':
-                token = getToken();        // ::= <val> + <val>
-                val = val + parseVal(token);
-                break;
+            token = getToken();        // ::= <val> + <val>
+            val = val + parseVal(token);
+            break;
             case '-':
+            token = getToken();        // ::= <val> - <val>
+            val = val - parseVal(token);
+            break;
             case '*':
+            token = getToken();        // ::= <val> * <val>
+            val = val * parseVal(token);
+            break;
             case '/':
+            token = getToken();        // ::= <val> / <val>
+            val = val / parseVal(token);
+            break;
             default:
-                line = opToken + line;
+            line = opToken + line;
         }
         return val;
     }
