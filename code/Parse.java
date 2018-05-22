@@ -34,17 +34,18 @@ public class Parse
     private void parseCode(String token) throws IOException
     {
         do {
-            parseStmt(token);              // ::= <stmt <code> | <stmt>
+            parseStmt(token, true);              // ::= <stmt <code> | <stmt>
             token = getToken();
         } while (!token.equals("."));
     }
 
 
     // parse token for <stmt>
-    private void parseStmt(String token) throws IOException
+    private void parseStmt(String token, boolean execute) throws IOException
     {
         int val;
         String str;
+        boolean cond;
 
         if (token.equals("load"))
         {
@@ -62,6 +63,7 @@ public class Parse
                 str = parseString(token);
 
                 // interpreter execution part
+                if (execute)
                 System.out.println(str);
             }
             else
@@ -69,6 +71,7 @@ public class Parse
                 val = parseExpr(token);
 
                 // interpreter executin part
+                if (execute)
                 System.out.println(val);
             }
         }
@@ -84,6 +87,20 @@ public class Parse
         }
         else if (token.equals("if"))
         {
+            token = getToken();
+            cond = parseCond(token);
+            token = getToken();
+            parseStmt(token, cond && execute);
+
+            // now see if we have an else
+            token = getToken();
+            if (token.equals("else"))
+            {
+                token = getToken();
+                parseStmt(token, !cond && execute);
+            }
+            else
+            line = token + line;
         }
         else if (isVar(token))
         {
@@ -138,6 +155,56 @@ public class Parse
             line = opToken + line;
         }
         return val;
+    }
+
+
+    private boolean parseCond(String token)
+    {
+        int val;
+        String opToken;
+
+        val = parseVal(token);
+        opToken = getToken();
+        switch(opToken.charAt(0))
+        {
+            case '>':
+            token = getToken();
+            if (val > parseVal(token))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            case '<':
+            token = getToken();
+            if (val < parseVal(token))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            case '=':
+            token = getToken();
+            if (token.equals("="))
+            {
+                token=getToken();
+                if (val == parseVal(token))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            default:
+            line = opToken + line;
+        }
+        return false;
     }
 
 
