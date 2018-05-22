@@ -107,6 +107,89 @@ public class Parse
             else
             line = token + line;
         }
+        else if (token.equals("repeat"))
+        {
+            token =getToken();
+            if (isVar(token) || isNumeric(token))
+            {
+                int start;
+                String startToken="";
+                if (isVar(token))
+                {
+                    start = parseExpr(token);
+                    startToken=token;
+                }
+                else
+                {
+                    start = parseVal(token);
+                }
+                token = getToken();
+                if (token.equals("to"))
+                {
+                    token = getToken();
+                    if (isNumeric(token) || isVar(token))
+                    {
+                        int stop;
+                        if (isVar(token))
+                        {
+                            stop = parseExpr(token);
+                        }
+                        else
+                        {
+                            stop = parseVal(token);
+                        }
+                        token = getToken();
+                        if (token.equals("by"))
+                        {
+                            token=getToken();
+                            if (isNumeric(token) || isVar(token))
+                            {
+                                int step;
+                                if (isVar(token))
+                                {
+                                    step = parseExpr(token);
+                                }
+                                else
+                                {
+                                    step = parseVal(token);
+                                }
+                                token=getToken();
+                                String getLine = line;
+
+
+                                for (int i=start; i<=stop; i+=step)
+                                {
+                                    line=getLine;
+                                    storeVar(startToken,i);
+                                    parseStmt(token, execute);
+                                }
+                                storeVar(startToken, start);
+                            }
+                            else
+                            {
+                                reportError(token);
+                            }
+                        }
+                        else
+                        {
+                            reportError(token);
+                        }
+                    }
+                    else
+                    {
+                        reportError(token);
+                    }
+                }
+                else
+                {
+                    reportError(token);
+                }
+            }
+            else
+            {
+                reportError(token);
+            }
+        }
         else if (isVar(token))
         {
             String var=token;
