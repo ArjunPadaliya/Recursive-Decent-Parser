@@ -7,15 +7,20 @@ public class Parse
     private String line;
     private Scanner scan;
     private int[] vars;
+    private String[] vars_id;
 
     // constructor
     public Parse()
     {
         line = "";
         scan = new Scanner(System.in);
-        vars = new int[26];
-        for (int i = 0; i < 26; i++)
+        vars = new int[256];
+        vars_id = new String[256];
+        for (int i = 0; i < 256; i++)
+        {
             vars[i] = 0;
+            vars_id[i]="";
+        }
     }
 
     // entry point into Parse
@@ -104,6 +109,17 @@ public class Parse
         }
         else if (isVar(token))
         {
+            String var=token;
+            token=getToken();
+            if (token.equals("="))
+            {
+                token=getToken();
+                val = parseExpr(token);
+                if (execute)
+                storeVar(var, val);
+            }
+            else
+                reportError(token);
         }
         else
             reportError(token);
@@ -231,20 +247,43 @@ public class Parse
         if (!isVar(token))
             reportError(token);
 
-        return vars[(int)token.charAt(0) - 97];
+        return vars[getIndex(token)];
     }
 
     // parse token to see if it's a variable
     private boolean isVar(String token)
     {
-        return token.length() == 1 && isAlpha(token.charAt(0));
+        if (token.length()==1)
+        {
+            return (isAlpha(token.charAt(0)));
+        }
+        if(token.length()>1)
+        {
+            if (isAlpha(token.charAt(0)) || isUnderScore(token.charAt(0)))
+            {
+                for (int i=0;i<=token.length();i++)
+                {
+                    if (isAlpha(token.charAt(0)) || isUnderScore(token.charAt(0)) || isDigit(token.charAt(0)))
+                    {
+                        //System.out.println("this is true");
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
+    //checks if a underscore
+    private boolean isUnderScore(char ch)
+    {
+        return (ch == '_');
+    }
 
     // stores var in vars array
     private void storeVar(String token, int val)
     {
-        vars[(int)token.charAt(0) - 97] = val;
+        vars[getIndex(token)] = val;
     }
 
 
@@ -386,6 +425,34 @@ public class Parse
         token = line;
         line = "";
         return token;
+    }
+
+    // gets hash index (and does linear probe for collisions).
+    private int getIndex(String token)
+    {
+        int index = getHash(token);
+
+        //System.out.println(index);
+        index = index % 256;
+
+        // linear probe
+        while (vars_id[index].length() != 0 && !vars_id[index].equals(token))
+            index = index + 1;   // keep it circular
+
+        vars_id[index] = token;          // first time (empty) we set it
+        return index;
+    }
+
+
+    // computes has given string
+    private int getHash(String token)
+    {
+        int val = 0;
+
+        for (int i=0; i<token.length(); i++)
+            val += token.charAt(i) * (i+1);
+
+        return val;
     }
 
     // reports a syntax error
