@@ -1,0 +1,9 @@
+print "enter dividend"
+input dividend
+print "enter divisor"
+input divisor
+divide = dividend/divisor
+product = divide * divisor
+modulus = dividend - product
+print "modulus is"
+print modulus + 0

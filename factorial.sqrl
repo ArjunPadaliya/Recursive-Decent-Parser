@@ -1,0 +1,7 @@
+print "Input number for factorial?"
+input number
+a = 1
+b = 1
+repeat b to number by 1
+ a = b * a
+ print a + 0
