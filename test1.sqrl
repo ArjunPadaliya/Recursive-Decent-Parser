@@ -1,0 +1,7 @@
+a = 1
+b = 1
+repeat a to 5 by b
+  repeat b to a by 1
+    print b + 0
+
+print a * b

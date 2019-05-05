@@ -1,0 +1,147 @@
+# Author: Mike Jonas
+# Date: July 7, 2014
+# Name: testAll.sqrl
+#
+# Purpose: This tests many of our features all at once.
+# Please see testAll.out for output...
+#
+# (Note actually don't need to do binary print until last statment)
+#
+
+#
+# Let's try some funky loop stuff and use real variable names
+#
+i = 2                     # let's test comments
+o = 2                     # this looks like real code
+repeat i to 10 by o       # so we have 2, 4, 6, 8, 10
+  repeat o to i by 3      # remember to increment by 3 here
+    print o
+
+print i                   # ok, sanity check to make sure
+print o                   # both are still 2 after loops
+
+
+#
+# Now some long sequences of if's
+#
+if 2 > 1
+  if 3 > 2
+    if 4 > 3
+      if 5 > 4
+        print 1       # all is true so print this
+
+
+if 2 > 2              # this is false
+  if 3 > 2
+    if 4 > 3
+      if 5 > 4
+        print 2       # we don't print this
+
+
+if 2 > 1
+  if 3 > 3            # this is false
+    if 4 > 3
+      if 5 > 4
+        print 3       # we don't print this
+
+
+if 2 > 1
+  if 3 > 2
+    if 4 > 4          # this is false
+      if 5 > 4
+        print 4       # we don't print this
+
+
+if 2 > 1
+  if 3 > 2
+    if 4 > 3
+      if 5 > 5        # this is false
+        print 5       # we don't print this
+
+
+#
+# Now let's test both if/else as well as < and ==
+#
+
+o = 1
+t = 2
+r = 3
+f = 4
+
+if t == t
+  print 1             # should be this one
+else
+  print 2
+
+
+if t == o
+  print 10
+else
+  print 20            # should be this one
+
+
+#
+# Oh yes, nesting if/else should work too
+#
+
+if o < t
+  if t < r
+    print 100         # should be this one
+  else
+    print 200
+else
+  print 300
+
+
+if o < o
+  if t < r
+    print 100
+  else
+    print 200
+else
+  print 300           # outer if is false so this one
+
+
+if o < t
+  if t < t
+    print 100
+  else
+    print 200         # inner if is false so this one
+else
+  print 300
+
+
+#
+# How about some if if/else (switch like) sequences
+#
+
+if o < t
+  print 1000          # first if to be true
+else if t < r
+  print 2000
+else if r < f
+  print 3000
+
+
+if o < o
+  print 1000
+else if t < r
+  print 2000          # first if to be true
+else if r < f
+  print 3000
+
+
+if o < o
+  print 1000
+else if t < t
+  print 2000
+else if r < f
+  print 3000          # first if to be true
+
+
+
+print o + t           # this last statement we do binary print so it prints 3
+
+#
+# And we are done!
+#
